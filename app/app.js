@@ -4,13 +4,40 @@ import BpmnModeler from 'bpmn-js/lib/Modeler';
 
 import diagramXML from '../resources/newDiagram.bpmn';
 
+
+import paletteModule from './dcr/palette';
+
+import contextPadModule from './dcr/context-pad';
+
+import popupMenuModule from './dcr/popup-menu';
+
+import drawModule from './dcr/draw';
+
+import dcrMetaModel from './dcr/meta-model/DcrMetamodel.json'
+
+
+
 var container = $('#js-drop-zone');
 
 var modeler = new BpmnModeler({
   container: '#js-canvas',
   keyboard: {
     bindTo: window
+  },
+
+  additionalModules: [
+    paletteModule,
+    drawModule,
+    contextPadModule,
+    popupMenuModule
+  ],
+
+  moddleExtensions: {
+    dcr: dcrMetaModel
   }
+
+
+
 });
 
 function createNewDiagram() {

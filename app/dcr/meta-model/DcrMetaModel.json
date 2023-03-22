@@ -1,0 +1,83 @@
+{
+    "name": "Dcr Graphs",
+    "uri": "http://some-company/schema/bpmn/dcr",
+    "prefix": "dcr",
+    "xml": {
+      "tagAlias": "lowerCase"
+    },
+    "types": [
+      {
+        "name": "DcrTask",
+        "superClass": [
+          "bpmn:Activity",
+          "bpmn:InteractionNode"
+        ]
+        
+      },
+  
+      {
+        "name": "DcrTaskInc",
+        "superClass": [
+          "bpmn:Activity",
+          "bpmn:InteractionNode"
+        ]
+      },
+  
+      {
+        "name": "AbstractContainerElement",
+        "isAbstract": true,
+        "superClass": [
+          "bpmn:SubProcess"
+        ]
+      },
+  
+      {
+        "name": "Lane",
+        "isAbstract": true,
+        "superClass": [
+          "bpmn:Lane"
+        ]
+      },
+  
+      {
+        "name": "DcrSubProcess",
+        "superClass": [
+          "bpmn:Task",
+          "AbstractContainerElement"
+        ]
+      },
+      
+      {
+        "name": "IncludeFlow",
+        "superClass": [
+          "bpmn:SequenceFlow"
+        ]
+      },
+  
+      {
+        "name": "PreConditionFlow",
+        "superClass": [
+          "bpmn:SequenceFlow"
+        ]
+      },
+  
+      {
+        "name": "ExcludeFlow",
+        "superClass": [
+          "bpmn:SequenceFlow"
+        ]
+      },
+  
+      {
+        "name": "ResponseFlow",
+        "superClass": [
+          "bpmn:SequenceFlow"
+        ]
+      }
+    ],
+  
+    "enumerations": [],
+    "associations": []
+  }
+  
+  
