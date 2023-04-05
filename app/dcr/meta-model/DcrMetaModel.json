@@ -9,7 +9,7 @@
       {
         "name": "DcrTask",
         "superClass": [
-          "bpmn:Activity",
+          "Activity",
           "bpmn:InteractionNode"
         ]
         
@@ -18,8 +18,56 @@
       {
         "name": "DcrTaskInc",
         "superClass": [
-          "bpmn:Activity",
-          "bpmn:InteractionNode"
+          "Activity",
+          "bpmn:FlowNode"
+        ]
+      },
+
+      {
+        "name": "DcrPendingInc",
+        "superClass": [
+          "DcrTask"
+        ]
+      },
+
+      {
+        "name": "DcrPendingExc",
+        "superClass": [
+          "DcrTaskInc"
+        ]
+      },
+      {
+        "name": "DcrExecutedInc",
+        "superClass": [
+          "DcrTask"
+        ]
+      },
+
+      {
+        "name": "DcrExecutedExc",
+        "superClass": [
+          "DcrTaskInc"
+        ]
+      },
+      
+      {
+        "name": "DcrPendingExecutedInc",
+        "superClass": [
+          "DcrTask"
+        ]
+      },
+
+      {
+        "name": "DcrPendingExecutedExc",
+        "superClass": [
+          "DcrTaskInc"
+        ]
+      },
+
+      {
+        "name": "Activity",
+        "superClass": [
+          "bpmn:Activity"
         ]
       },
   
@@ -53,6 +101,27 @@
           "bpmn:SequenceFlow"
         ]
       },
+
+      {
+        "name": "ExcludeFlow",
+        "superClass": [
+          "bpmn:SequenceFlow"
+        ]
+      },
+
+      {
+        "name": "ResponseFlow",
+        "superClass": [
+          "bpmn:SequenceFlow"
+        ]
+      },
+
+      {
+        "name": "PreConditonFlow",
+        "superClass": [
+          "bpmn:SequenceFlow"
+        ]
+      },
   
       {
         "name": "PreConditionFlow",
@@ -61,12 +130,6 @@
         ]
       },
   
-      {
-        "name": "ExcludeFlow",
-        "superClass": [
-          "bpmn:SequenceFlow"
-        ]
-      },
   
       {
         "name": "ResponseFlow",

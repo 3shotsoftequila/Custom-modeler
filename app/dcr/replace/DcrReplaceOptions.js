@@ -27,13 +27,29 @@ export var DCRTASK = [
         }
     },
     {
-        label: 'Start Event',
-        actionName: 'replace-with-none-start',
+        label: 'Pending Marker:ON',
+        actionName: 'replace-with-dcr-pending-inc',
         className: 'bpmn-icon-start-event-none',
         target: {
-          type: 'bpmn:StartEvent'
+          type: 'dcr:DcrPendingInc'
         }
-      },
+    },
+    {
+        label: 'Executed Marker:ON',
+        actionName: 'replace-with-dcr-executed-inc',
+        className: 'bpmn-icon-intermediate-event-none',
+        target: {
+        type: 'dcr:DcrExecutedInc'
+        }
+    },
+    {
+        label: 'Pending and Executed Marker:ON',
+        actionName: 'replace-with-dcr-pending-executed-inc',
+        className: 'bpmn-icon-lane-insert-above',
+        target: {
+        type: 'dcr:DcrPendingExecutedInc'
+        }
+    },
 ]
 
 
@@ -66,20 +82,38 @@ export var DCRTASKINC = [
         }
     },
     {
-        label: 'Intermediate Throw Event',
-        actionName: 'replace-with-none-intermediate-throw',
+        label: 'Pending Marker:ON',
+        actionName: 'replace-with-dcr-pending-exc',
         className: 'bpmn-icon-intermediate-event-none',
         target: {
-          type: 'bpmn:IntermediateThrowEvent'
+          type: 'dcr:DcrPendingExc'
         }
     },
+    {
+        label: 'Executed:ON',
+        actionName: 'replace-with-dcr-executed-exc',
+        className: 'bpmn-icon-intermediate-event-none',
+        target: {
+        type: 'dcr:DcrExecutedExc'
+        }
+    },
+    {
+        label: 'Pending and Executed Marker:ON',
+        actionName: 'replace-with-dcr-pending-executed-exc',
+        className: 'bpmn-icon-lane-insert-above',
+        target: {
+        type: 'dcr:DcrPendingExecutedExc'
+        }
+    },
+    
 ]
 
 
+/*
 
 export var SEQUENCE_FLOW = [
     {
-        label: 'Sequence Flow',
+        label: 'Sequence have Flow',
         actionName: 'replace-with-sequence-flow',
         className: 'bpmn-icon-connection',
         target: {
@@ -95,7 +129,7 @@ export var SEQUENCE_FLOW = [
             type: 'bpmn:ConditionalFlow'
         }
     }
-];
+];*/
 
 
 

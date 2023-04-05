@@ -15,6 +15,10 @@ import drawModule from './dcr/draw';
 
 import dcrMetaModel from './dcr/meta-model/DcrMetamodel.json'
 
+import LabelEditingModule from './dcr/label-editing';
+
+import rulesModule from './dcr/rules';
+
 
 
 var container = $('#js-drop-zone');
@@ -29,7 +33,9 @@ var modeler = new BpmnModeler({
     paletteModule,
     drawModule,
     contextPadModule,
-    popupMenuModule
+    popupMenuModule,
+    LabelEditingModule,
+    rulesModule
   ],
 
   moddleExtensions: {

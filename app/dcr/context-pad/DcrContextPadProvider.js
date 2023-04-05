@@ -138,7 +138,7 @@ export default class DcrContextPadProvider {
                     'append-connect': {
                         group: 'append',
                         className: 'bpmn-icon-connection',
-                        title: translate('Connect using Custom Connector'),
+                        title: translate('Connect using Custom DcrTask Connector'),
                         action: {
                           click: startConnect,
                           dragstart: startConnect
@@ -165,10 +165,10 @@ export default class DcrContextPadProvider {
                         }
                     },
 
-
+/*
                     'append-include-flow': {
                         group: 'connect',
-                        className: 'bpmn-icon-service',
+                        className: 'bpmn-icon-connection',
                         title: translate('Render Include FLow'),
                         action: {
                             click: startConnect,
@@ -178,14 +178,14 @@ export default class DcrContextPadProvider {
 
                     'append-includererer-flow': {
                         group: 'connect',
-                        className: 'bpmn-icon-user',
-                        title: translate('Render Include FLow'),
+                        className: 'bpmn-icon-connection',
+                        title: translate('Render new Include FLow'),
                         action: {
                             click: startConnect,
                             dragstart: startConnect
                         }
                     },
-
+*/
                 }
                     
             }
@@ -251,7 +251,7 @@ export default class DcrContextPadProvider {
                     'append-connect': {
                         group: 'append',
                         className: 'bpmn-icon-connection',
-                        title: translate('Connect using Custom Connector'),
+                        title: translate('Connect using Custom DcrTaskInc Connector'),
                         action: {
                           click: startConnect,
                           dragstart: startConnect
@@ -274,7 +274,7 @@ export default class DcrContextPadProvider {
                 delete actions['connect']
 
                 return {
-                    ...actions,
+                    ...actions,/*
                     'append-replace': {
                         group: 'edit',
                         className: 'bpmn-icon-screw-wrench',
@@ -286,14 +286,14 @@ export default class DcrContextPadProvider {
                                 cursor: { x: event.x, y: event.y }
                             });
 
-                            popupMenu.open(element, /*'bpmn-replace'*/ 'dcr-replace', position, {
+                            popupMenu.open(element, /*'bpmn-replace'*//* 'dcr-replace', position, {
                                 title: translate('Change element'),
                                 width: 300,
                                 search: true
                               });
                             }
                         }
-                    },
+                    },*/
                 }
 
 

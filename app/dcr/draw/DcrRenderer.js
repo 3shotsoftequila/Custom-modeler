@@ -65,12 +65,12 @@ var RENDERER_IDS = new Ids();
 var TASK_BORDER_RADIUS = 10;
 
 export default function DcrRenderer(
-    eventBus, styles, pathMap, priority, textRenderer, canvas) {
+    eventBus, styles, pathMap, textRenderer, canvas, priority) {
     
     BaseRenderer.call(this, eventBus, 1500);
+ 
 
-
-    //var computeStyle = styles.computeStyle;
+    var computeStyle = styles.computeStyle;
 
     var rendererId = RENDERER_IDS.next();
 
@@ -97,35 +97,51 @@ export default function DcrRenderer(
         });
     }
 
+
     function addMarker(id, options) {
-        var {
-            ref = { x: 0, y: 0 },
-            scale = 1,
-            element
-        } = options;
-
-        var marker = svgCreate('marker', {
-            id: id,
-            viewBox: '0 0 20 20',
-            refX: ref.x,
-            refY: ref.y,
-            markerWidth: 20 * scale,
-            markerHeight: 20 * scale,
-            orient: 'auto'
-        });
-
-        svgAppend(marker, element);
-
-        var defs = domQuery('defs', canvas._svg);
-
-        if (!defs) {
-            defs = svgCreate('defs');
-
-            svgAppend(canvas._svg, defs);
+        var attrs = assign({
+          fill: black,
+          strokeWidth: 1,
+          strokeLinecap: 'round',
+          strokeDasharray: 'none'
+        }, options.attrs);
+    
+        var ref = options.ref || { x: 0, y: 0 };
+    
+        var scale = options.scale || 1;
+    
+        // fix for safari / chrome / firefox bug not correctly
+        // resetting stroke dash array
+        if (attrs.strokeDasharray === 'none') {
+          attrs.strokeDasharray = [ 10000, 1 ];
         }
-
+    
+        var marker = svgCreate('marker');
+    
+        svgAttr(options.element, attrs);
+    
+        svgAppend(marker, options.element);
+    
+        svgAttr(marker, {
+          id: id,
+          viewBox: '0 0 20 20',
+          refX: ref.x,
+          refY: ref.y,
+          markerWidth: 20 * scale,
+          markerHeight: 20 * scale,
+          orient: 'auto'
+        });
+    
+        var defs = domQuery('defs', canvas._svg);
+    
+        if (!defs) {
+          defs = svgCreate('defs');
+    
+          svgAppend(canvas._svg, defs);
+        }
+    
         svgAppend(defs, marker);
-
+    
         markers[id] = marker;
     }
 
@@ -148,46 +164,151 @@ export default function DcrRenderer(
     function createMarker(id, type, fill, stroke) {
 
         if (type === 'includeflow-end') {
-            var includeflowEnd = svgCreate( 'path', {
-
-
-
+            var includeflowEnd = svgCreate( 'path');
+            svgAttr(includeflowEnd, {
 
                 
-                d: 'M 1 5 L 11 10 L 1 15 Z',
-                ...shapeStyle({
-                    fill: black,
-                    stroke: black,
-                    strokeWidth: 1
-                })
-            });
+                d: "M 19.84,4.42 C 19.84,4.42 19.87,6.42 19.87,6.42 19.87,6.42 9.72,6.44 9.72,6.44 9.72,6.44 9.69,4.43 9.69,4.43 9.69,4.43 19.84,4.42 19.84,4.42 Z M 13.93,0.02 C 13.93,0.02 15.94,0.00 15.94,0.00 15.94,0.00 15.91,10.98 15.91,10.98 15.91,10.98 13.90,11.00 13.90,11.00 13.90,11.00 13.93,0.02 13.93,0.02 Z M 9.16,5.74 C 9.16,5.74 4.58,7.77 4.58,7.77 4.58,7.77 0.00,9.81 0.00,9.81 0.00,9.81 0.01,5.72 0.01,5.72 0.01,5.72 0.02,1.63 0.02,1.63 0.02,1.63 4.59,3.68 4.59,3.68 4.59,3.68 9.16,5.74 9.16,5.74 Z",
+                //'M 1 5 L 11 10 L 1 15 Z',
+                
+        });
 
             addMarker(id, {
                 element: includeflowEnd,
-                ref: { x: 11, y: 10 },
-                scale: 0.5
+                ref: { x: 20, y: 5.62 },
+                scale: 0.55,
+                attrs: {
+                  fill: 'green',
+                  stroke: 'green'
+                }
             });
             
         } 
 
-        if (type === 'circle-end') {
-            var circleEnd = svgCreate( 'path', {
-                d: "M 14.00,7.50 C 14.00,11.64 10.87,15.00 7.00,15.00 3.13,15.00 0.00,11.64 0.00,7.50 0.00,3.36 3.13,0.00 7.00,0.00 10.87,0.00 14.00,3.36 14.00,7.50 Z",
-                ...shapeStyle({
-                    fill: black,
-                    stroke: black,
-                    strokeWidth: 1
-                })
+        if (type === 'excludeflow-end') {
+            var excludeflowEnd = svgCreate( 'path');
+            svgAttr(excludeflowEnd, {
+
+                
+                d: "M 18.28,0.00 C 18.28,0.00 20.00,0.92 20.00,0.92 20.00,0.92 11.84,14.84 11.84,14.84 11.84,14.84 10.12,13.92 10.12,13.92 10.12,13.92 18.28,0.00 18.28,0.00 Z M 16.61,13.64 C 16.61,14.39 17.23,15.00 18.01,15.00 18.78,15.00 19.41,14.39 19.41,13.64 19.41,12.88 18.78,12.27 18.01,12.27 17.23,12.27 16.61,12.88 16.61,13.64 Z M 13.74,1.47 C 13.74,2.22 13.11,2.83 12.34,2.83 11.56,2.83 10.94,2.22 10.94,1.47 10.94,0.72 11.56,0.11 12.34,0.11 13.11,0.11 13.74,0.72 13.74,1.47 Z M 12.25,7.81 C 12.25,7.81 6.13,11.23 6.13,11.23 6.13,11.23 -0.00,14.65 -0.00,14.65 -0.00,14.65 0.02,7.78 0.02,7.78 0.02,7.78 0.03,0.92 0.03,0.92 0.03,0.92 6.14,4.36 6.14,4.36 6.14,4.36 12.25,7.81 12.25,7.81 Z",
+   
+                //'M 1 5 L 11 10 L 1 15 Z',
+                
+        });
+
+            addMarker(id, {
+                element: excludeflowEnd,
+                ref: { x: 20, y: 7.73 },
+                scale: 0.4,
+                attrs: {
+                  fill: 'red',
+                  stroke: 'red'
+                }
+            });
+            
+        }
+
+        if (type === 'responseflow-end') {
+            var responseflowEnd = svgCreate( 'path');
+            svgAttr(responseflowEnd, {
+
+                
+                d: "M 1 5 L 11 10 L 1 15 Z",
+                
+        });
+
+            addMarker(id, {
+                element: responseflowEnd,
+                ref: { x: 11, y: 10 },
+                scale: 0.55,
+                attrs: {
+                  fill: '#0096FF',  //#0096FF = bright blue 
+                  stroke: '#0096FF'
+                }
+            });
+            
+        } 
+
+
+        
+        if (type === 'pre-conditionflow-end') {
+            var preconditonflowEnd = svgCreate( 'path');
+            svgAttr(preconditonflowEnd, {
+
+                
+                d: "M 15.25,0.00 C 15.25,0.00 17.13,3.26 17.13,3.26 17.13,3.26 19.00,6.53 19.00,6.53 19.00,6.53 15.26,6.53 15.26,6.53 15.26,6.53 11.52,6.54 11.52,6.54 11.52,6.54 13.39,3.27 13.39,3.27 13.39,3.27 15.25,0.00 15.25,0.00 Z M 15.27,13.00 C 15.27,13.00 13.40,9.74 13.40,9.74 13.40,9.74 11.52,6.47 11.52,6.47 11.52,6.47 15.26,6.47 15.26,6.47 15.26,6.47 19.00,6.46 19.00,6.46 19.00,6.46 17.13,9.73 17.13,9.73 17.13,9.73 15.27,13.00 15.27,13.00 Z M 10.78,6.62 C 10.78,6.62 5.39,9.06 5.39,9.06 5.39,9.06 -0.00,11.51 -0.00,11.51 -0.00,11.51 0.01,6.61 0.01,6.61 0.01,6.61 0.03,1.70 0.03,1.70 0.03,1.70 5.41,4.16 5.41,4.16 5.41,4.16 10.78,6.62 10.78,6.62 Z",
+       
+                
+        });
+
+            addMarker(id, {
+                element: preconditonflowEnd,
+                ref: { x: 20, y: 7 },
+                scale: 0.55,
+                attrs: {
+                  fill: 'orange',  
+                  stroke: 'orange'
+                }
+            });
+            
+        } 
+
+
+
+        if (type === 'circle-start') {
+            var circleEnd = svgCreate( 'circle');
+            svgAttr(circleEnd, {
+                cx: 6, cy: 6, r: 2.0
             });
 
             addMarker(id, {
                 element: circleEnd,
-                ref: { x: -1, y: 10 },
-                scale: 0.5
-            });
-            
+                attrs: {
+                    ref: { x: -1, y: 10 },
+                    scale: 0.5,
+                    fill: '#0096FF',
+                    stroke: '#0096FF'
+                },
+                ref: { x: 6, y:6 }
+            });   
         } 
     }
+
+/*   
+  function drawCircle(parentGfx, width, height, offset, attrs) {
+
+    if (isObject(offset)) {
+      attrs = offset;
+      offset = 0;
+    }
+
+    offset = offset || 0;
+
+    attrs = computeStyle(attrs, {
+      stroke: black,
+      strokeWidth: 2,
+      fill: 'white'
+    });
+
+    if (attrs.fill === 'none') {
+      delete attrs.fillOpacity;
+    }
+
+    var cx = width / 2,
+        cy = height / 2;
+
+    var circle = svgCreate('circle');
+    svgAttr(circle, {
+      cx: cx,
+      cy: cy,
+      r: Math.round((width + height) / 4 - offset)
+    });
+    svgAttr(circle, attrs);
+
+    svgAppend(parentGfx, circle);
+
+    return circle;
+  } */
 
 
 //155  note to self
@@ -231,7 +352,11 @@ export default function DcrRenderer(
      * @return {SVGElement}
      */
     function drawLine(parentGfx, waypoints, attrs, radius) {
-        attrs = lineStyle(attrs);
+        attrs = computeStyle(attrs, [ 'no-fill' ], {
+            stroke: black,
+            strokeWidth: 2,
+            fill: 'none'
+        });
     
         var line = createLine(waypoints, attrs, radius);
     
@@ -239,6 +364,8 @@ export default function DcrRenderer(
     
         return line;
     }
+
+//bamenda
 
     /**
      * @param {SVGElement} parentGfx
@@ -253,12 +380,14 @@ export default function DcrRenderer(
   
     function drawPath(parentGfx, d, attrs) {
   
-      attrs = lineStyle(attrs);
-  
-      var path = svgCreate('path', {
-        ...attrs,
-        d
+      attrs = computeStyle(attrs, [ 'no-fill' ], {
+        strokeWidth: 2,
+        stroke: black
       });
+  
+      var path = svgCreate('path');
+      svgAttr(path, { d: d });
+      svgAttr(path, attrs);
   
       svgAppend(parentGfx, path);
   
@@ -297,12 +426,36 @@ export default function DcrRenderer(
         svgClasses(text).add('djs-label');
 
         return text;*/
+
+        options = assign({
+            size: {
+              width: 100
+            }
+          }, options);
+      
+          var text = textRenderer.createText(label || '', options);
+      
+          svgClasses(text).add('djs-label');
+      
+          svgAppend(parentGfx, text);
+      
+          return text;
     }
 
     //function renderEmbeddedLabel
 
     function renderEmbeddedLabel(parentGfx, element, align, attr) {
         //enter code here
+        var semantic = getSemantic(element);
+
+        return renderLabel(parentGfx, semantic.name, {
+          box: element,
+          align: align,
+          padding: 7,
+          style: {
+            fill: 'black'
+          }
+        });
     }
 
     //function renderExternalLabel
@@ -313,11 +466,53 @@ export default function DcrRenderer(
     
     //function renderLaneLabel
 
-    function renderLaneLabel(parentGfx, element) {
+    function renderLaneLabel(parentGfx, text, element) {
         //enter code here
+        var textBox = renderLabel(parentGfx, text, {
+            box: {
+              height: 30,
+              width: element.width
+            },
+            align: 'center-middle',
+            style: {
+              fill: 'black'
+            }
+          });
+      
+          var top = 0;
+      
+          transform(textBox, 0, -top, 0);
+    }
+
+    function renderCustomLabel(parentGfx, text, element) {
+        //enter code here
+        var textBox = renderLabel(parentGfx, text, {
+            box: {
+              height: 30,
+              width: element.height
+            },
+            align: 'center-middle',
+            style: {
+              fill: 'black'
+            }
+          });
+      
+          var top = -1*element.height;
+      
+          transform(textBox, 0, -top, 270);
     }
 
     //574 852
+
+    function createPathFromConnection(connection) {
+        var waypoints = connection.waypoints;
+    
+        var pathData = 'm  ' + waypoints[0].x + ',' + waypoints[0].y;
+        for (var i = 1; i < waypoints.length; i++) {
+          pathData += 'L' + waypoints[i].x + ',' + waypoints[i].y + ' ';
+        }
+        return pathData;
+    }
 
     var handlers = this.handlers = {
 
@@ -325,10 +520,10 @@ export default function DcrRenderer(
         'dcr:DcrTask': function (parentGfx, element) {
 
             if (element.width < 250) {
-                element.width = 100;
+                element.width = 140;
             }
             if (element.height < 250) {
-                element.height = 140;
+                element.height = 190;
             }
 
             var strokeWidth = 1.5;
@@ -342,15 +537,19 @@ export default function DcrRenderer(
             var lane = renderer('dcr:Lane')(parentGfx, element, attrs);
 
             drawLine(parentGfx, [
-                { x: 0,y: 30 },
-                { x: element.width, y: 30 }
+                { x: 0, y: 40 },
+                { x: element.width, y: 40 }
             ], {
                 stroke: 'black',
                 strokeWidth
             });
 
-            //var text = getSemantic(element).name;
-            //renderLaneLabel(parentGfx, text, element);
+            var text = getSemantic(element).name;
+            var secondtext = getSemantic(element).secondname;
+            renderLaneLabel(parentGfx, text, element);
+            //renderCustomLabel(parentGfx, secondtext, element );
+            //renderEmbeddedLabel(parentGfx, element, 'center-middle');
+
 
             //attachEventMarkers( parentGfx, element);
 
@@ -358,32 +557,46 @@ export default function DcrRenderer(
 
         },
 
+
         'dcr:Lane': function(parentGfx, element, attrs) {
-            var rect = drawRect(parentGfx, element.width, element.height, 5, {
+            var rect = drawRect(parentGfx, element.width, element.height, 5, assign({
+                fill: 'e1ebf7',
+                stroke: 'black'
+            }, attrs)
+            /*{
               fill: 'e1ebf7',
               //fillOpacity: HIGH_FILL_OPACITY,
               stroke: 'black',
               strokeWidth: 1.5,
               ...attrs
-            });
+            }*/
+            
+            );
       
             var semantic = getSemantic(element);
       
             if (semantic.$type === 'dcr:Lane') {
               var text = semantic.name;
-              //renderEmbeddedLabel(parentGfx, text, element);
+              renderLaneLabel(parentGfx, text, element);
             }
       
             return rect;
         },
 
+        'dcr:Activity': function(parentGfx, element, attrs) {
+
+            attrs = attrs || {};
+
+            return drawRect(parentGfx, element.width, element.height, TASK_BORDER_RADIUS, attrs);
+          },
+
         'dcr:DcrTaskInc': function (parentGfx, element) {
 
             if (element.width < 250) {
-                element.width = 100;
+                element.width = 140;
             }
             if (element.height < 250) {
-                element.height = 140;
+                element.height = 190;
             }
 
 
@@ -399,18 +612,158 @@ export default function DcrRenderer(
             var lane = renderer('dcr:Lane')(parentGfx, element, attrs);
 
             drawLine(parentGfx, [
-                { x: 0,y: 30 },
-                { x: element.width, y: 30 }
+                { x: 0, y: 40 },
+                { x: element.width, y: 40 }
             ], {
                 stroke: 'black',
                 strokeWidth,
                 strokeDasharray: '12 5'
             });
 
+            var text = getSemantic(element).name;
+            renderLaneLabel(parentGfx, text, element);
+            
+
             return lane;
  
 
         },
+
+
+        
+        'dcr:DcrPendingInc': function(parentGfx, element) {
+            var task = renderer('dcr:DcrTask')(parentGfx, element);
+
+            var pathData = pathMap.getScaledPath('TASK_TYPE_PENDING', {
+                abspos: {
+                    x: 3,
+                    y: 67
+                }
+            });
+
+            
+            /* pending path */ 
+            drawPath(parentGfx, pathData, {
+                strokeWidth: 0.5, // 0.25,
+                fill: '#0096FF',
+                stroke: '#0096FF'
+            });
+
+            return task;
+        },   
+        
+        'dcr:DcrPendingExc': function (parentGfx, element) {
+            var task = renderer('dcr:DcrTaskInc')(parentGfx, element);
+
+            var pathData = pathMap.getScaledPath('TASK_TYPE_PENDING', {
+                abspos: {
+                    x: 3,
+                    y: 67
+                }
+            });
+
+            
+            /* pending path */ 
+            drawPath(parentGfx, pathData, {
+                strokeWidth: 0.5, // 0.25,
+                fill: '#0096FF',  //#0096FF = bright blue 
+                stroke: '#0096FF'
+            });
+
+            return task;
+        },   
+
+
+                
+        'dcr:DcrExecutedInc': function(parentGfx, element) {
+            var task = renderer('dcr:DcrTask')(parentGfx, element);
+
+            var pathData = pathMap.getScaledPath('TASK_TYPE_EXECUTED', {
+                scale: 10,
+                abspos: {
+                    x: 136, //133,
+                    y: 50
+                  }
+            });
+
+            
+            /* executed path */ 
+            drawPath(parentGfx, pathData, {
+                strokeWidth: 0.5, // 0.25,
+                fill: 'green',
+                stroke: 'green' 
+            });
+
+            return task;
+        },   
+        
+        
+        'dcr:DcrExecutedExc': function(parentGfx, element) {
+            var task = renderer('dcr:DcrTaskInc')(parentGfx, element);
+
+            var pathData = pathMap.getScaledPath('TASK_TYPE_EXECUTED', {
+                abspos: {
+                    x: 136,  //133,
+                    y: 50
+                  }
+            });
+
+            
+            /* executed path */ 
+            drawPath(parentGfx, pathData, {
+                strokeWidth: 0.5, // 0.25,
+                fill: 'green',
+                stroke: 'green' 
+            });
+
+            return task;
+        },
+
+        
+        'dcr:DcrPendingExecutedInc': function(parentGfx, element) {
+            var task = renderer('dcr:DcrExecutedInc')(parentGfx, element);
+
+            var pathData = pathMap.getScaledPath('TASK_TYPE_PENDING', {
+                abspos: {
+                    x: 3,
+                    y: 67
+                }
+            });
+
+            
+            /* pending path */ 
+            drawPath(parentGfx, pathData, {
+                strokeWidth: 0.5, // 0.25,
+                fill: '#0096FF',
+                stroke: '#0096FF'
+            });
+
+            return task;
+        },
+
+        'dcr:DcrPendingExecutedExc': function(parentGfx, element) {
+            var task = renderer('dcr:DcrExecutedExc')(parentGfx, element);
+
+            var pathData = pathMap.getScaledPath('TASK_TYPE_PENDING', {
+                abspos: {
+                    x: 3,
+                    y: 67
+                }
+            });
+
+            
+            /* pending path */ 
+            drawPath(parentGfx, pathData, {
+                strokeWidth: 0.5, // 0.25,
+                fill: '#0096FF',
+                stroke: '#0096FF'
+            });
+
+            return task;
+        },
+        
+        
+
 
         'dcr:DcrSubProcesses': function (parentGfx, element) {
 
@@ -435,32 +788,205 @@ export default function DcrRenderer(
         //look at = flows start here
 
         'dcr:IncludeFlow': function(parentGfx, element) {
-            var fill = 'green',
-                stroke = 'green';
-      
-            var path = drawConnectionSegments(parentGfx, element.waypoints, {
-              markerStart: marker('circle-end', fill, stroke),
-              markerEnd: marker('includeflow-end', fill, stroke),
-              stroke: 'purple'
-            });
+            
+            var pathData = createPathFromConnection(element);
 
-            var includeflow = getSemantic(element);
+            var attrs = {
+                strokeLinejoin: 'round',
+                markerEnd: marker('includeflow-end', 'black', 'black'),
+                //markerStart: marker('circle-start', 'green', 'green'),
+                stroke: 'green'
+            };
+
+            var path = drawPath(parentGfx, pathData, attrs);
+
+            var includeFlow = getSemantic(element);
 
             var source;
 
-            /*
-            if (element.source) {
-                source = element.source.businessObject;
-
-                
-            }*/
-      
+            /**
+             * Enter code for replacement flows
+             * Look at the code in the bpmnRenderer file in bpmn-js for guidance
+             * Look from line: 1936 - 1412
+             */
+            
             return path;
+        },
+
+        
+        'dcr:ExcludeFlow': function(parentGfx, element) {
+            
+            var pathData = createPathFromConnection(element);
+
+            var attrs = {
+                strokeLinejoin: 'round',
+                markerEnd: marker('excludeflow-end', 'red', 'red'),
+                //markerStart: marker('circle-start', 'red', 'red'),
+                stroke: 'red'
+            };
+
+            var path = drawPath(parentGfx, pathData, attrs);
+
+            var excludeFlow = getSemantic(element);
+
+            var source;
+
+            /**
+             * Enter code for replacement flows
+             * Look at the code in the bpmnRenderer file in bpmn-js for guidance
+             * Look from line: 1936 - 1412
+             */
+            
+            return path;
+        },
+
+
+        
+        'dcr:ResponseFlow': function(parentGfx, element) {
+            
+            var pathData = createPathFromConnection(element);
+
+            var attrs = {
+                strokeLinejoin: 'round',
+                markerEnd: marker('responseflow-end', '#0096FF', '#0096FF'),
+                markerStart: marker('circle-start', '#0096FF', '#0096FF'),
+                stroke: '#0096FF'
+            };
+
+            var path = drawPath(parentGfx, pathData, attrs);
+
+            var responseFlow = getSemantic(element);
+
+            var source;
+
+            /**
+             * Enter code for replacement flows
+             * Look at the code in the bpmnRenderer file in bpmn-js for guidance
+             * Look from line: 1936 - 1412
+             */
+            
+            return path;
+        },
+
+
+        
+        'dcr:PreConditionFlow': function(parentGfx, element) {
+            
+            var pathData = createPathFromConnection(element);
+
+            var attrs = {
+                strokeLinejoin: 'round',
+                markerEnd: marker('pre-conditionflow-end', 'orange', 'orange'),
+                //markerStart: marker('circle-start', 'green', 'green'),
+                stroke: 'orange'
+            };
+
+            var path = drawPath(parentGfx, pathData, attrs);
+
+            var preConditionFlow = getSemantic(element);
+
+            var source;
+
+            /**
+             * Enter code for replacement flows
+             * Look at the code in the bpmnRenderer file in bpmn-js for guidance
+             * Look from line: 1936 - 1412
+             */
+            
+            return path;
+        },
+
+
+
+
+
+
+
+/***********************************************************************************************************************/
+/*************************** LOOK AT THIS SECTION FOR PARALLEL MARKERS BELOW AGAIN *************************************/
+/***********************************************************************************************************************/
+
+
+
+        //embedded markers ==> starts here  ref: Line 1679
+
+        'PendingMarker': function(parentGfx, element, position) {
+
+            var markerPath = pathMap.getScaledPath('MARKER_PARALLEL', {
+                xScaleFactor: 1,
+                yScaleFactor: 1,
+                containerWidth: element.width,
+                containerHeight: element.height,
+                position: {
+                  mx: ((element.width / 2 + position.parallel) / element.width),
+                  my: (element.height - 20) / element.height
+                }
+            });
+
+            drawMarker('parallel', parentGfx, markerPath, {
+                //strokeWidth: 2,
+                fill: 'black',
+                stroke: 'black'
+            });
+        },
+
+        'ExecutedMarker': function(parentGfx, element, position) {
+            var markerPath = pathMap.getScaledPath('MARKER_LOOP', {
+              xScaleFactor: 1,
+              yScaleFactor: 1,
+              containerWidth: element.width,
+              containerHeight: element.height,
+              position: {
+                mx: ((element.width / 2 + position.loop) / element.width),
+                my: (element.height - 7) / element.height
+              }
+            });
+      
+            drawMarker('loop', parentGfx, markerPath, {
+              strokeWidth: 1,
+              fill: black,
+              stroke: black,
+              strokeLinecap: 'round',
+              strokeMiterlimit: 0.5
+            });
         },
 
 
     }
 
+    function attachTaskMarkers(parentGfx, element, taskMarkers) {
+
+        var obj = getSemantic(element);
+
+        //var subprocess = taskMarkers && taskMarkers.indexOf('SubProcessMarker') !== -1;
+        var position = {
+            parallel: -6,
+            loop: 30
+        };
+
+        forEach(taskMarkers, function(marker) {
+            renderer(marker)(parentGfx, element, position);
+        });
+
+        var loopCharacteristics = obj.loopCharacteristics,
+        isSequential = loopCharacteristics && loopCharacteristics.isSequential;
+
+        if (loopCharacteristics) {
+
+            if (isSequential === undefined) {
+                renderer('ExecutedMarker')(parentGfx, element, position);
+            }
+
+            if (isSequential === false) {
+                renderer('PendingMarker')(parentGfx, element, position);
+            }
+/*
+            if (isSequential === true) {
+                renderer('SequentialMarker')(parentGfx, element, position);
+            }*/
+        }
+
+    }
   
 
     this.canRender = function (element) {
@@ -498,13 +1024,13 @@ DcrRenderer.$inject = [
     'eventBus',
     'styles',
     'pathMap',
-    'canvas',
-    'textRenderer'
+    'textRenderer',
+    'canvas'
 ];
 
 
 function getConnectionsAbleToDraw() {
-    return ['dcr:DcrTask', 'dcr:DcrTaskInc', 'dcr:DcrSubProcess', 'dcr:DcrIncludeFlow', /* 'dcr:DcrExcludeFlow', 'dcr:DcrResponseFlow', 'dcr:PreconditionFlow'*/];
+    return ['dcr:DcrTask', 'dcr:DcrTaskInc', 'dcr:DcrSubProcess', 'dcr:IncludeFlow', 'dcr:ExcludeFlow',  'dcr:ResponseFlow',  'dcr:PreConditionFlow'];
 }
 
 

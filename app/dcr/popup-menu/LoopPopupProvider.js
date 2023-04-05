@@ -32,8 +32,10 @@ LoopPopupProvider.prototype.getHeaderEntries = function(element) {
   function toggleEntry(event, entry) {
     let marker;
     if (entry.active) {
+      console.log("clicking")
       marker = 'None';
     } else {
+      console.log("clicked")
       marker = entry.loopType;
     }
     self._modeling.updateProperties(element, {
@@ -52,15 +54,15 @@ LoopPopupProvider.prototype.getHeaderEntries = function(element) {
     },
     {
       id: 'toggle-sequential-mi',
-      className: 'bpmn-icon-sequential-mi-marker',
-      title: 'Sequential Multi Instance',
+      className: 'bpmn-icon-parallel-mi-marker',
+      title: 'Sequentially Multi Instance',
       active: isSequential,
       action: toggleEntry,
       loopType: 'MultiInstanceSequential'
     },
     {
       id: 'toggle-loop',
-      className: 'bpmn-icon-loop-marker',
+      className: 'bpmn-icon-parallel-mi-marker',
       title: 'Loop',
       active: isStandard,
       action: toggleEntry,

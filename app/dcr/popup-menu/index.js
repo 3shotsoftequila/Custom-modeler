@@ -11,10 +11,10 @@ export default {
 
     __init__: [ 
         'dcrReplaceMenuProvider',
-        'loopPopupProvider'
+        //'loopPopupProvider'
     ],
     dcrReplaceMenuProvider: [ 'type', DcrReplaceMenuProvider ],
-    loopPopupProvider: [ 'type', LoopPopupProvider ]
+    //loopPopupProvider: [ 'type', LoopPopupProvider ]
 
 };
 

@@ -1,7 +1,6 @@
 import { assign} from 'min-dash'
 
 
-
 export default function DcrPaletteProvider(
     palette, create, elementFactory, 
     translate, spaceTool, lassoTool, handTool,
@@ -143,11 +142,6 @@ DcrPaletteProvider.prototype.getPaletteEntries = function(element) {
                 'dcr:DcrSubProcess', 'activity', 'bpmn-icon-subprocess-expanded', 
                 translate('Create Sub-Process')
             ),*/
-
-            'create.include-flow': createAction(
-                'dcr:IncludeFlow', 'connector', 'bpmn-icon-connection', 
-                translate('Custom flow: Draw Include-Flow')
-            ),
         }
     };
 
